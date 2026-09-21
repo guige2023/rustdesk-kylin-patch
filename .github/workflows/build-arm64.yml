@@ -1,0 +1,42 @@
+name: build-arm64
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: checkout patch repo
+        uses: actions/checkout@v4
+      - name: checkout rustdesk 1.4.9
+        uses: actions/checkout@v4
+        with:
+          repository: rustdesk/rustdesk
+          ref: 1.4.9
+          path: rustdesk
+          submodules: recursive
+      - name: apply kylin patch
+        run: |
+          cd rustdesk
+          git apply --stat ../kylin-keyboard.patch
+          git apply ../kylin-keyboard.patch
+          grep -n "PATCH(kylin)" libs/enigo/src/linux/nix_impl.rs
+      - name: install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ gcc clang curl wget nasm yasm \
+            libgtk-3-dev libxdo-dev libssl-dev libx11-dev libxrandr2-dev \
+            libxtst-dev libxcb1-dev libxfixes-dev libxkbcommon-dev \
+            libasound2-dev libpulse-dev libgstreamer1.0-dev \
+            libgstreamer-plugins-base1.0-dev libpipewire-0.3-dev \
+            libayatana-appindicator3-dev protobuf-compiler libvpx-dev
+      - name: install rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: build rust lib
+        run: |
+          cd rustdesk
+          cargo build --release --lib --features flutter
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: librustdesk-arm64-kylin
+          path: rustdesk/target/release/liblibrustdesk.so

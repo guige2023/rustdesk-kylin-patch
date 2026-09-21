@@ -1,0 +1,24 @@
+--- a/libs/enigo/src/linux/nix_impl.rs
++++ b/libs/enigo/src/linux/nix_impl.rs
+@@ -118,17 +118,10 @@
+         let is_x11 = hbb_common::platform::linux::is_x11_or_headless();
+         Self {
+             is_x11,
+-            tfc: if is_x11 {
+-                match TFC_Context::new() {
+-                    Ok(ctx) => Some(ctx),
+-                    Err(..) => {
+-                        println!("kbd context error");
+-                        None
+-                    }
+-                }
+-            } else {
+-                None
+-            },
++            // PATCH(kylin): tfc XKB keycode-remap silently fails on Kylin V10 aarch64
++            // (returns Ok but events never reach apps). Disable tfc so keyboard
++            // always falls back to xdo/XTEST which is proven reliable on this platform.
++            tfc: None,
+             custom_keyboard: None,
+             custom_mouse: None,
+             xdo: EnigoXdo::default(),
