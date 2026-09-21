@@ -28,7 +28,7 @@ jobs:
             libxtst-dev libxcb1-dev libxfixes-dev libxkbcommon-dev \
             libasound2-dev libpulse-dev libgstreamer1.0-dev \
             libgstreamer-plugins-base1.0-dev libpipewire-0.3-dev \
-            libayatana-appindicator3-dev protobuf-compiler libvpx-dev libpam0g-dev
+            libayatana-appindicator3-dev protobuf-compiler libvpx-dev libpam0g-dev libyuv-dev
       - name: install rust
         uses: dtolnay/rust-toolchain@stable
       - name: build rust lib
