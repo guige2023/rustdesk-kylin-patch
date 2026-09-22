@@ -1,6 +1,8 @@
 name: build-arm64
 on:
   workflow_dispatch:
+env:
+  FLUTTER_RUST_BRIDGE_VERSION: "1.80.1"
 jobs:
   build:
     runs-on: ubuntu-24.04-arm
@@ -55,7 +57,7 @@ jobs:
       - name: install frb codegen
         run: |
           source $HOME/.cargo/env
-          cargo install flutter_rust_bridge_codegen --version ${{ env.FLUTTER_RUST_BRIDGE_VERSION }} --features uuid --locked
+          cargo install flutter_rust_bridge_codegen --version 1.80.1 --features uuid --locked
       - name: generate bridge
         run: |
           source $HOME/.cargo/env
