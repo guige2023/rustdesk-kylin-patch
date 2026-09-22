@@ -3,6 +3,8 @@ on:
   workflow_dispatch:
 env:
   FLUTTER_RUST_BRIDGE_VERSION: "1.80.1"
+  CMAKE_POLICY_VERSION_MINIMUM: "3.5"
+  VCPKG_FORCE_SYSTEM_BINARIES: ""
 jobs:
   build:
     runs-on: ubuntu-24.04-arm
@@ -32,6 +34,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: patch
+      - name: vcpkg failure logs
+        if: failure()
+        run: |
+          tail -40 /opt/vcpkg/buildtrees/libyuv/*.log 2>/dev/null || true
+          tail -40 /opt/vcpkg/buildtrees/aom/*.log 2>/dev/null || true
       - name: apply kylin patch
         run: |
           cd rustdesk
