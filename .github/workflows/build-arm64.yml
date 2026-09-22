@@ -15,7 +15,8 @@ jobs:
       - name: install modern cmake
         run: |
           DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip
-          pip3 install --upgrade cmake
+          python3 -m pip install --upgrade pip
+          python3 -m pip install cmake==3.31.6
           cmake --version
       - name: install base tools
         run: |
