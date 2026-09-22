@@ -3,7 +3,6 @@ on:
   workflow_dispatch:
 env:
   FLUTTER_RUST_BRIDGE_VERSION: "1.80.1"
-  CMAKE_POLICY_VERSION_MINIMUM: "3.5"
   VCPKG_FORCE_SYSTEM_BINARIES: "1"
 jobs:
   build:
@@ -48,7 +47,8 @@ jobs:
         run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable -c rustfmt
       - name: install vcpkg codecs (static libyuv + aom)
         run: |
-          git clone --depth 1 https://github.com/microsoft/vcpkg /opt/vcpkg
+          git clone https://github.com/microsoft/vcpkg /opt/vcpkg
+          git -C /opt/vcpkg checkout b02e341c927f16d991edbd915d8ea43eac52096c
           /opt/vcpkg/bootstrap-vcpkg.sh
           /opt/vcpkg/vcpkg install libyuv:arm64-linux aom:arm64-linux
           echo "VCPKG_ROOT=/opt/vcpkg" >> $GITHUB_ENV
