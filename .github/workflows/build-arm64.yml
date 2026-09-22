@@ -23,7 +23,7 @@ jobs:
             libayatana-appindicator3-dev protobuf-compiler libvpx-dev libpam0g-dev libaom-dev libopus-dev python3
       - name: build libaom 3.x from source
         run: |
-          git clone --depth 1 -b v3.8.3 https://aomedia.googlesource.com/aom /opt/aomsrc
+          rm -rf /opt/aomsrc && git clone --depth 1 -b v3.8.3 https://aomedia.googlesource.com/aom /opt/aomsrc
           mkdir -p /opt/aomsrc/build && cd /opt/aomsrc/build
           cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local \
             -DBUILD_SHARED_LIBS=0 -DENABLE_TESTS=0 -DENABLE_DOCS=0 -DENABLE_EXAMPLES=0 \
@@ -63,7 +63,7 @@ jobs:
           pkg-config --modversion libyuv
       - name: build libaom 3.x from source (static)
         run: |
-          git clone --depth 1 -b v3.8.3 https://aomedia.googlesource.com/aom /opt/aomsrc
+          rm -rf /opt/aomsrc && git clone --depth 1 -b v3.8.3 https://aomedia.googlesource.com/aom /opt/aomsrc
           mkdir -p /opt/aomsrc/build && cd /opt/aomsrc/build
           cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local \
             -DBUILD_SHARED_LIBS=0 -DENABLE_TESTS=0 -DENABLE_DOCS=0 -DENABLE_EXAMPLES=0 \
