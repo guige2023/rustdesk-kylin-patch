@@ -32,7 +32,7 @@ jobs:
             libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
             libpipewire-0.3-dev libayatana-appindicator3-dev \
             protobuf-compiler libvpx-dev libpam0g-dev libyuv-dev \
-            libclang-dev llvm-dev libunwind-dev libva-dev
+            libclang-dev llvm-dev libunwind-dev libva-dev libopus-dev libaom-dev
       - name: write libyuv pc
         run: |
           echo cHJlZml4PS91c3IKbGliZGlyPS91c3IvbGliL2FhcmNoNjQtbGludXgtZ251CmluY2x1ZGVkaXI9L3Vzci9pbmNsdWRlCgpOYW1lOiBsaWJ5dXYKRGVzY3JpcHRpb246IGxpYnl1diAoc3lzdGVtIHBhY2thZ2Ugc2hpbSkKVmVyc2lvbjogMTg1MApMaWJzOiAtTCR7bGliZGlyfSAtbHl1dgpDZmxhZ3M6IC1JJHtpbmNsdWRlZGlyfQo= | base64 -d > /tmp/libyuv.pc
