@@ -14,7 +14,7 @@ jobs:
       - name: install base tools
         run: |
           apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y git curl wget unzip ca-certificates \
+          DEBIAN_FRONTEND=noninteractive apt-get install -y git curl wget unzip zip tar ca-certificates libtool \
             build-essential cmake nasm yasm ninja-build pkg-config clang llvm libclang-dev perl \
             libgtk-3-dev libxdo-dev libssl-dev libx11-dev libxrandr-dev libxtst-dev \
             libxcb1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxfixes-dev \
