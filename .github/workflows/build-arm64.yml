@@ -54,6 +54,12 @@ jobs:
           pushd flutter && flutter pub get && popd
           ~/.cargo/bin/flutter_rust_bridge_codegen --rust-input ./src/flutter_ffi.rs --dart-output ./flutter/lib/generated_bridge.dart --c-output ./flutter/macos/Runner/bridge_generated.h
           ls -la src/bridge_generated.rs src/bridge_generated.io.rs
+      - name: libyuv pkg-config shim
+        run: |
+          sudo mkdir -p /usr/local/lib/pkgconfig
+          echo cHJlZml4PS91c3IKbGliZGlyPS91c3IvbGliL2FhcmNoNjQtbGludXgtZ251CmluY2x1ZGVkaXI9L3Vzci9pbmNsdWRlCgpOYW1lOiBsaWJ5dXYKRGVzY3JpcHRpb246IGxpYnl1diAoc3lzdGVtIHBhY2thZ2Ugc2hpbSkKVmVyc2lvbjogMTg1MApMaWJzOiAtTCR7bGliZGlyfSAtbHl1dgpDZmxhZ3M6IC1JJHtpbmNsdWRlZGlyfQo= | base64 -d | sudo tee /usr/local/lib/pkgconfig/libyuv.pc >/dev/null
+          pkg-config --modversion libyuv || echo "WARNING: libyuv pc still missing"
+
       - name: build rust lib
         run: |
           cd rustdesk
