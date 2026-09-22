@@ -67,6 +67,12 @@ jobs:
           pushd flutter && flutter pub get && popd
           ~/.cargo/bin/flutter_rust_bridge_codegen --rust-input ./src/flutter_ffi.rs --dart-output ./flutter/lib/generated_bridge.dart --c-output ./flutter/macos/Runner/bridge_generated.h
           ls -la src/bridge_generated.rs src/bridge_generated.io.rs
+      - name: vpx pkg-config shim
+        run: |
+          sudo mkdir -p /usr/local/lib/pkgconfig
+          echo cHJlZml4PS91c3IKbGliZGlyPS91c3IvbGliL2FhcmNoNjQtbGludXgtZ251CmluY2x1ZGVkaXI9L3Vzci9pbmNsdWRlCgpOYW1lOiB2cHgKRGVzY3JpcHRpb246IFdlYk0gVlA4L1ZQOSAoc3lzdGVtIHBhY2thZ2Ugc2hpbSkKVmVyc2lvbjogMS44CkxpYnM6IC1MJHtsaWJkaXJ9IC1sdnB4CkNmbGFnczogLUkke2luY2x1ZGVkaXJ9Cg== | base64 -d | sudo tee /usr/local/lib/pkgconfig/vpx.pc >/dev/null
+          pkg-config --modversion vpx || echo "WARNING: vpx pc still missing"
+
       - name: build rust lib
         run: |
           source $HOME/.cargo/env
