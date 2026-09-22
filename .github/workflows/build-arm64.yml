@@ -106,6 +106,13 @@ jobs:
           ls -la /usr/include/vpx/ 2>&1 | head -5 || true
           pkg-config --cflags vpx || true
           find /usr -name "vp8.h" 2>/dev/null | head -3
+      - name: verify libaom install
+        run: |
+          ls -la /usr/local/lib/libaom* 2>&1
+          nm /usr/local/lib/libaom.a 2>/dev/null | grep -c "T aom_codec_control" || echo "静态库中无 aom_codec_control"
+          PKG_CONFIG_PATH=/usr/local/lib/pkgconfig pkg-config --libs aom
+          PKG_CONFIG_PATH=/usr/local/lib/pkgconfig pkg-config --variable=libdir aom
+          find /usr/lib /usr/share -name "aom.pc" 2>/dev/null || echo "无其他 aom.pc"
       - name: build rust lib
         run: |
           source $HOME/.cargo/env
