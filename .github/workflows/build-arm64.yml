@@ -14,6 +14,7 @@ jobs:
     steps:
       - name: install modern cmake
         run: |
+          apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq wget ca-certificates
           wget -q https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-linux-aarch64.tar.gz -O /tmp/cmake.tgz
           tar xzf /tmp/cmake.tgz -C /opt
           ln -sf /opt/cmake-3.31.6-linux-aarch64/bin/cmake /usr/local/bin/cmake
