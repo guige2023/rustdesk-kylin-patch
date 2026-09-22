@@ -1,6 +1,8 @@
 name: build-arm64
 on:
   workflow_dispatch:
+env:
+  FLUTTER_RUST_BRIDGE_VERSION: "1.80.1"
 jobs:
   build:
     runs-on: ubuntu-24.04-arm
@@ -32,18 +34,25 @@ jobs:
             libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
             libpipewire-0.3-dev libayatana-appindicator3-dev \
             protobuf-compiler libvpx-dev libpam0g-dev libyuv-dev \
-            libclang-dev llvm-dev libunwind-dev libva-dev libopus-dev libaom-dev
-      - name: write libyuv pc
-        run: |
-          echo cHJlZml4PS91c3IKbGliZGlyPS91c3IvbGliL2FhcmNoNjQtbGludXgtZ251CmluY2x1ZGVkaXI9L3Vzci9pbmNsdWRlCgpOYW1lOiBsaWJ5dXYKRGVzY3JpcHRpb246IGxpYnl1diAoc3lzdGVtIHBhY2thZ2Ugc2hpbSkKVmVyc2lvbjogMTg1MApMaWJzOiAtTCR7bGliZGlyfSAtbHl1dgpDZmxhZ3M6IC1JJHtpbmNsdWRlZGlyfQo= | base64 -d > /tmp/libyuv.pc
-      - name: libyuv pkg-config shim
-        run: |
-          sudo mkdir -p /usr/local/lib/pkgconfig
-          sudo cp /tmp/libyuv.pc /usr/local/lib/pkgconfig/libyuv.pc
-          pkg-config --modversion libyuv || echo "libyuv pc still not found"
-
+            libclang-dev llvm-dev libunwind-dev libva-dev
       - name: install rust
         uses: dtolnay/rust-toolchain@stable
+      - name: install flutter 3.44.0
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.44.0
+          cache: true
+      - name: install flutter_rust_bridge_codegen
+        run: |
+          cargo install flutter_rust_bridge_codegen --version ${{ env.FLUTTER_RUST_BRIDGE_VERSION }} --features "uuid" --locked
+      - name: generate bridge
+        run: |
+          cd rustdesk
+          bash .github/patches/apply_flutter_3.44_source_patches.sh
+          pushd flutter && flutter pub get && popd
+          ~/.cargo/bin/flutter_rust_bridge_codegen --rust-input ./src/flutter_ffi.rs --dart-output ./flutter/lib/generated_bridge.dart --c-output ./flutter/macos/Runner/bridge_generated.h
+          ls -la src/bridge_generated.rs src/bridge_generated.io.rs
       - name: build rust lib
         run: |
           cd rustdesk
