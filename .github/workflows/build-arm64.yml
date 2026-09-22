@@ -1,9 +1,6 @@
 name: build-arm64
 on:
   workflow_dispatch:
-env:
-  FLUTTER_RUST_BRIDGE_VERSION: "1.80.1"
-  VCPKG_FORCE_SYSTEM_BINARIES: "1"
 jobs:
   build:
     runs-on: ubuntu-24.04-arm
@@ -12,21 +9,14 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: install modern cmake
-        run: |
-          apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq wget ca-certificates
-          wget -q https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-linux-aarch64.tar.gz -O /tmp/cmake.tgz
-          tar xzf /tmp/cmake.tgz -C /opt
-          ln -sf /opt/cmake-3.31.6-linux-aarch64/bin/cmake /usr/local/bin/cmake
-          cmake --version
       - name: install base tools
         run: |
           apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y git curl wget unzip zip tar ca-certificates libtool \
+          DEBIAN_FRONTEND=noninteractive apt-get install -y git curl wget unzip zip ca-certificates \
             build-essential cmake nasm yasm ninja-build pkg-config clang llvm libclang-dev perl \
             libgtk-3-dev libxdo-dev libssl-dev libx11-dev libxrandr-dev libxtst-dev \
             libxcb1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxfixes-dev \
-            libxkbcommon-dev libasound2-dev libpulse-dev \
+            libxkbcommon-dev libasound2-dev libpulse-dev libaom-dev \
             libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
             libayatana-appindicator3-dev protobuf-compiler libpam0g-dev python3
       - name: checkout rustdesk 1.4.9
@@ -40,11 +30,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: patch
-      - name: vcpkg failure logs
-        if: failure()
-        run: |
-          tail -40 /opt/vcpkg/buildtrees/libyuv/*.log 2>/dev/null || true
-          tail -40 /opt/vcpkg/buildtrees/aom/*.log 2>/dev/null || true
       - name: apply kylin patch
         run: |
           cd rustdesk
@@ -52,17 +37,16 @@ jobs:
           grep -n "PATCH(kylin)" libs/enigo/src/linux/nix_impl.rs
       - name: install rust
         run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable -c rustfmt
-      - name: install vcpkg codecs (static libyuv + aom)
+      - name: build libyuv from source (strip i8mm/sve flags not supported by focal gcc9)
         run: |
-          git clone https://github.com/microsoft/vcpkg /opt/vcpkg
-          git -C /opt/vcpkg checkout b02e341c927f16d991edbd915d8ea43eac52096c
-          /opt/vcpkg/bootstrap-vcpkg.sh
-          echo c2V0KFZDUEtHX1RBUkdFVF9BUkNISVRFQ1RVUkUgYXJtNjQpCnNldChWQ1BLR19DUlRfTElOS0FHRSBkeW5hbWljKQpzZXQoVkNQS0dfTElCUkFSWV9MSU5LQUdFIHN0YXRpYykKc2V0KFZDUEtHX0NNQUtFX1NZU1RFTV9OQU1FIExpbnV4KQpzZXQoQ01BS0VfUE9MSUNZX1ZFUlNJT05fTUlOSU1VTSAzLjUpCg== | base64 -d > /opt/vcpkg/triplets/arm64-linux.cmake
-          /opt/vcpkg/vcpkg install libyuv:arm64-linux aom:arm64-linux
-          echo "VCPKG_ROOT=/opt/vcpkg" >> $GITHUB_ENV
-          echo "VCPKG_INSTALLED_ROOT=/opt/vcpkg/installed" >> $GITHUB_ENV
-          echo "NO_PKG_CONFIG_libyuv=1" >> $GITHUB_ENV
-          echo "NO_PKG_CONFIG_aom=1" >> $GITHUB_ENV
+          git clone --depth 1 https://github.com/lemenkov/libyuv /opt/libyuv
+          cd /opt/libyuv
+          sed -i '/i8mm/d; /sve2/d; /armv8\.5/d' CMakeLists.txt
+          mkdir -p buildt && cd buildt
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+          make -j$(nproc) && make install
+          printf 'prefix=/usr\nlibdir=/usr/lib/aarch64-linux-gnu\nincludedir=/usr/include\n\nName: libyuv\nDescription: libyuv\nVersion: 1850\nLibs: -L${libdir} -lyuv\nCflags: -I${includedir}\n' > /usr/local/lib/pkgconfig/libyuv.pc
+          pkg-config --modversion libyuv
       - name: install flutter 3.44.0
         run: |
           git clone --depth 1 -b 3.44.0 https://github.com/flutter/flutter /opt/flutter
