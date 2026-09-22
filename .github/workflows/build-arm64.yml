@@ -73,6 +73,11 @@ jobs:
           echo cHJlZml4PS91c3IKbGliZGlyPS91c3IvbGliL2FhcmNoNjQtbGludXgtZ251CmluY2x1ZGVkaXI9L3Vzci9pbmNsdWRlCgpOYW1lOiB2cHgKRGVzY3JpcHRpb246IFdlYk0gVlA4L1ZQOSAoc3lzdGVtIHBhY2thZ2Ugc2hpbSkKVmVyc2lvbjogMS44CkxpYnM6IC1MJHtsaWJkaXJ9IC1sdnB4CkNmbGFnczogLUkke2luY2x1ZGVkaXJ9Cg== | base64 -d > /usr/local/lib/pkgconfig/vpx.pc
           pkg-config --modversion vpx || echo "WARNING: vpx pc still missing"
 
+      - name: debug vpx headers
+        run: |
+          ls -la /usr/include/vpx/ 2>&1 | head -5 || true
+          pkg-config --cflags vpx || true
+          find /usr -name "vp8.h" 2>/dev/null | head -3
       - name: build rust lib
         run: |
           source $HOME/.cargo/env
