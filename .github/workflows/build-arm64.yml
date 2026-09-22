@@ -16,7 +16,7 @@ jobs:
             libgtk-3-dev libxdo-dev libssl-dev libx11-dev libxrandr-dev libxtst-dev \
             libxcb1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxfixes-dev \
             libxkbcommon-dev libasound2-dev libpulse-dev \
-            libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libpipewire-0.3-dev \
+            libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
             libayatana-appindicator3-dev protobuf-compiler libvpx-dev libpam0g-dev libaom-dev python3
       - name: checkout rustdesk 1.4.9
         uses: actions/checkout@v4
