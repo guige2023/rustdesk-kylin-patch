@@ -12,6 +12,11 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: install modern cmake
+        run: |
+          DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip
+          pip3 install --upgrade cmake
+          cmake --version
       - name: install base tools
         run: |
           apt-get update
@@ -50,6 +55,7 @@ jobs:
           git clone https://github.com/microsoft/vcpkg /opt/vcpkg
           git -C /opt/vcpkg checkout b02e341c927f16d991edbd915d8ea43eac52096c
           /opt/vcpkg/bootstrap-vcpkg.sh
+          echo 'set(CMAKE_POLICY_VERSION_MINIMUM 3.5)' >> /opt/vcpkg/triplets/arm64-linux.cmake
           /opt/vcpkg/vcpkg install libyuv:arm64-linux aom:arm64-linux
           echo "VCPKG_ROOT=/opt/vcpkg" >> $GITHUB_ENV
           echo "VCPKG_INSTALLED_ROOT=/opt/vcpkg/installed" >> $GITHUB_ENV
