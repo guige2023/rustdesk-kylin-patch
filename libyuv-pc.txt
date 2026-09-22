@@ -1,0 +1,9 @@
+prefix=/usr
+libdir=/usr/lib/aarch64-linux-gnu
+includedir=/usr/include
+
+Name: libyuv
+Description: libyuv (system package shim)
+Version: 1850
+Libs: -L${libdir} -lyuv
+Cflags: -I${includedir}

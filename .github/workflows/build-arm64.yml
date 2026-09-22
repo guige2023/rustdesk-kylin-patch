@@ -33,6 +33,15 @@ jobs:
             libpipewire-0.3-dev libayatana-appindicator3-dev \
             protobuf-compiler libvpx-dev libpam0g-dev libyuv-dev \
             libclang-dev llvm-dev libunwind-dev libva-dev
+      - name: write libyuv pc
+        run: |
+          echo cHJlZml4PS91c3IKbGliZGlyPS91c3IvbGliL2FhcmNoNjQtbGludXgtZ251CmluY2x1ZGVkaXI9L3Vzci9pbmNsdWRlCgpOYW1lOiBsaWJ5dXYKRGVzY3JpcHRpb246IGxpYnl1diAoc3lzdGVtIHBhY2thZ2Ugc2hpbSkKVmVyc2lvbjogMTg1MApMaWJzOiAtTCR7bGliZGlyfSAtbHl1dgpDZmxhZ3M6IC1JJHtpbmNsdWRlZGlyfQo= | base64 -d > /tmp/libyuv.pc
+      - name: libyuv pkg-config shim
+        run: |
+          mkdir -p /usr/local/lib/pkgconfig
+          cp /tmp/libyuv.pc /usr/local/lib/pkgconfig/libyuv.pc
+          pkg-config --modversion libyuv || echo "libyuv pc still not found"
+
       - name: install rust
         uses: dtolnay/rust-toolchain@stable
       - name: build rust lib

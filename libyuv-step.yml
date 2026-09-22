@@ -1,0 +1,5 @@
+      - name: libyuv pkg-config shim
+        run: |
+          mkdir -p /usr/local/lib/pkgconfig
+          cp /tmp/libyuv.pc /usr/local/lib/pkgconfig/libyuv.pc
+          pkg-config --modversion libyuv || echo "libyuv pc still not found"
