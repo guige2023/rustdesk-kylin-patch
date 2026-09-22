@@ -30,7 +30,8 @@ jobs:
             -DENABLE_TOOLS=0
           make -j$(nproc) && make install
           printf 'prefix=/usr/local\nlibdir=/usr/local/lib\nincludedir=/usr/local/include\n\nName: aom\nDescription: libaom 3.x static\nVersion: 3.8.3\nLibs: -L${libdir} -laom -lm\nCflags: -I${includedir}\n' > /usr/local/lib/pkgconfig/aom.pc
-          pkg-config --modversion aom
+          rm -f /usr/lib/aarch64-linux-gnu/pkgconfig/aom.pc
+          PKG_CONFIG_PATH=/usr/local/lib/pkgconfig pkg-config --modversion aom
 
       - name: checkout rustdesk 1.4.9
         uses: actions/checkout@v4
@@ -70,7 +71,8 @@ jobs:
             -DENABLE_TOOLS=0
           make -j$(nproc) && make install
           printf 'prefix=/usr/local\nlibdir=/usr/local/lib\nincludedir=/usr/local/include\n\nName: aom\nDescription: libaom 3.x static\nVersion: 3.8.3\nLibs: -L${libdir} -laom -lm\nCflags: -I${includedir}\n' > /usr/local/lib/pkgconfig/aom.pc
-          pkg-config --modversion aom
+          rm -f /usr/lib/aarch64-linux-gnu/pkgconfig/aom.pc
+          PKG_CONFIG_PATH=/usr/local/lib/pkgconfig pkg-config --modversion aom
 
       - name: install flutter 3.44.0
         run: |
