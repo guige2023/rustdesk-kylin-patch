@@ -38,7 +38,7 @@ jobs:
       - name: build rust lib
         run: |
           cd rustdesk
-          cargo build --release --lib --features flutter
+          cargo build --release --lib --features flutter,linux-pkg-config
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
