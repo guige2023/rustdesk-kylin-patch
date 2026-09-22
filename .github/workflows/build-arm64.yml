@@ -57,7 +57,7 @@ jobs:
           git clone https://github.com/microsoft/vcpkg /opt/vcpkg
           git -C /opt/vcpkg checkout b02e341c927f16d991edbd915d8ea43eac52096c
           /opt/vcpkg/bootstrap-vcpkg.sh
-          echo 'set(CMAKE_POLICY_VERSION_MINIMUM 3.5)' >> /opt/vcpkg/triplets/arm64-linux.cmake
+          { echo 'set(CMAKE_POLICY_VERSION_MINIMUM 3.5)'; echo 'set(VCPKG_CMAKE_SYSTEM_NAME Linux)'; } >> /opt/vcpkg/triplets/arm64-linux.cmake
           /opt/vcpkg/vcpkg install libyuv:arm64-linux aom:arm64-linux
           echo "VCPKG_ROOT=/opt/vcpkg" >> $GITHUB_ENV
           echo "VCPKG_INSTALLED_ROOT=/opt/vcpkg/installed" >> $GITHUB_ENV
