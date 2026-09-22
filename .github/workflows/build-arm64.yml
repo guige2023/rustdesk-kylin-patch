@@ -45,6 +45,7 @@ jobs:
           mkdir -p buildt && cd buildt
           cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
           make -j$(nproc) && make install
+          mkdir -p /usr/local/lib/pkgconfig
           printf 'prefix=/usr\nlibdir=/usr/lib/aarch64-linux-gnu\nincludedir=/usr/include\n\nName: libyuv\nDescription: libyuv\nVersion: 1850\nLibs: -L${libdir} -lyuv\nCflags: -I${includedir}\n' > /usr/local/lib/pkgconfig/libyuv.pc
           pkg-config --modversion libyuv
       - name: install flutter 3.44.0
