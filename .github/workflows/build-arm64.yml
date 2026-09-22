@@ -104,6 +104,7 @@ jobs:
         run: |
           source $HOME/.cargo/env
           export PATH=/opt/flutter/bin:$PATH
+          export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
           cd rustdesk
           cargo build --release --lib --features flutter,linux-pkg-config
       - name: upload artifact
