@@ -43,7 +43,7 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/microsoft/vcpkg /opt/vcpkg
           /opt/vcpkg/bootstrap-vcpkg.sh
-          /opt/vcpkg/vcpkg install libyuv:aarch64-linux aom:aarch64-linux
+          /opt/vcpkg/vcpkg install libyuv:arm64-linux aom:arm64-linux
           echo "VCPKG_ROOT=/opt/vcpkg" >> $GITHUB_ENV
           echo "VCPKG_INSTALLED_ROOT=/opt/vcpkg/installed" >> $GITHUB_ENV
           echo "NO_PKG_CONFIG_libyuv=1" >> $GITHUB_ENV
