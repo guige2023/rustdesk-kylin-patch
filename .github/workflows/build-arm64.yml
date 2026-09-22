@@ -39,9 +39,9 @@ jobs:
         run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable -c rustfmt
       - name: build libyuv from source (strip i8mm/sve flags not supported by focal gcc9)
         run: |
-          git clone --depth 1 https://github.com/lemenkov/libyuv /opt/libyuv
+          git clone https://github.com/lemenkov/libyuv /opt/libyuv
           cd /opt/libyuv
-          sed -i '/i8mm/d; /sve2/d; /armv8\.5/d' CMakeLists.txt
+          git checkout $(git rev-list -1 --before="2023-06-01" HEAD)
           mkdir -p buildt && cd buildt
           cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
           make -j$(nproc) && make install
