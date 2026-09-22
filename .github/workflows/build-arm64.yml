@@ -34,7 +34,7 @@ jobs:
             libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
             libpipewire-0.3-dev libayatana-appindicator3-dev \
             protobuf-compiler libvpx-dev libpam0g-dev libyuv-dev \
-            libclang-dev llvm-dev libunwind-dev libva-dev
+            libclang-dev llvm-dev libunwind-dev libva-dev libaom-dev libopus-dev
       - name: install rust
         uses: dtolnay/rust-toolchain@stable
       - name: install flutter 3.44.0 via git
