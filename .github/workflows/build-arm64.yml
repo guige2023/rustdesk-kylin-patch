@@ -21,6 +21,17 @@ jobs:
             libxkbcommon-dev libasound2-dev libpulse-dev libaom-dev \
             libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
             libayatana-appindicator3-dev protobuf-compiler libvpx-dev libpam0g-dev libaom-dev libopus-dev python3
+      - name: build libaom 3.x from source
+        run: |
+          git clone --depth 1 -b v3.8.3 https://aomedia.googlesource.com/aom /opt/aomsrc
+          mkdir -p /opt/aomsrc/build && cd /opt/aomsrc/build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DBUILD_SHARED_LIBS=0 -DENABLE_TESTS=0 -DENABLE_DOCS=0 -DENABLE_EXAMPLES=0 \
+            -DENABLE_TOOLS=0
+          make -j$(nproc) && make install
+          printf 'prefix=/usr/local\nlibdir=/usr/local/lib\nincludedir=/usr/local/include\n\nName: aom\nDescription: libaom 3.x static\nVersion: 3.8.3\nLibs: -L${libdir} -laom -lm\nCflags: -I${includedir}\n' > /usr/local/lib/pkgconfig/aom.pc
+          pkg-config --modversion aom
+
       - name: checkout rustdesk 1.4.9
         uses: actions/checkout@v4
         with:
